@@ -1,25 +1,28 @@
-buildscript {
-  repositories {
-    maven {
-      url 'https://plugins.gradle.org/m2/'
-    }
-  }
-  dependencies {
-    classpath 'gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1'
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compile 'org.jsoup:jsoup:1.9.2'
-    testCompile 'junit:junit:4.12'
-  }
-}
-
-repositories {
-  jcenter()
-  mavenCentral()
-}
-
 apply plugin: 'java'
 apply plugin: 'edu.sc.seis.launch4j'
 
+repositories {
+	jcenter()
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.slf4j:slf4j-api:1.7.21'
+	compile 'org.jsoup:jsoup:1.9.2'
+	testCompile 'junit:junit:4.12'
+}
+
+buildscript {
+	repositories {
+		maven {
+			url 'https://plugins.gradle.org/m2/'
+		}
+	}
+	dependencies {
+		classpath 'gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1'
+	}
+}
+
 launch4j {
-  mainClassName = 'info.iconmaster.who2comm.Who2Comm'
+	mainClassName = 'info.iconmaster.who2comm.Who2Comm'
 }
