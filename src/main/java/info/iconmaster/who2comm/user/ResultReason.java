@@ -23,4 +23,10 @@ public class ResultReason {
 	public String desc;
 	public String source;
 	public String link;
+	
+	@Override
+	public String toString() {
+		return "ResultReason [type=" + type + ", kind=" + kind + ", desc=" + desc + ", source=" + source + ", link="
+				+ link + "]";
+	}
 }
