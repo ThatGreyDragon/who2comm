@@ -48,6 +48,7 @@ public class User {
 	public void findIfCommsOpen() {
 		getUserPage();
 		
+		//check to see if we're not able to see the page
 		Element isPageBad = userpage.select("table.maintable tbody tr td.alt1").first();
 		if (!isPageBad.text().equals(" ")) {
 			ResultReason res = new ResultReason();
@@ -55,15 +56,56 @@ public class User {
 			res.kind = ReasonKind.UNKNOWN;
 			res.desc = "This user requires you to register to see this account.";
 			res.source = isPageBad.html();
+			res.link = getUserPageUrl();
 			reasons.add(res);
 			return;
 		}
 		
+		//look at the featured journal
+		Element featJournal = userpage.select("div.journal-body").first();
+		ReasonKind jres1 = findEvidence(featJournal, ReasonType.JOURNAL).kind;
+		
+		//look at the journal header; common across all journals
+		Element header = userpage.select("div.journal-header").first();
+		ReasonKind jres2 = ReasonKind.UNKNOWN;
+		if (header != null) {
+			jres2 = findEvidence(header, ReasonType.JOURNAL_HEADER).kind;
+		}
+		
+		//look at the journal footer; common across all journals
+		Element footer = userpage.select("div.journal-header").first();
+		ReasonKind jres3 = ReasonKind.UNKNOWN;
+		if (footer != null) {
+			jres3 = findEvidence(footer, ReasonType.JOURNAL_FOOTER).kind;
+		}
+		
+		if (jres1 == ReasonKind.UNKNOWN && jres2 == ReasonKind.UNKNOWN && jres3 == ReasonKind.UNKNOWN) {
+			//if nothing is in featured journal, load up journals page and sift through them
+			//we want to do this as a last resort, as it involves loading another page
+			
+		}
+		
+		//look at the user profile
 		Element profile = userpage.select("td.alt1.addpad table tbody tr td.ldot").first();
 		findEvidence(profile, ReasonType.PROFILE);
+		
+		// look at the "Accepting Commissions" box at the side of the profile
+		// Not many artists use this, so don't count it much
+		Element commBox = userpage.select("span.option-yes").first();
+		ResultReason cbres = new ResultReason();
+		cbres.type = ReasonType.OPEN_STATUS_BOX;
+		cbres.link = getUserPageUrl();
+		if (commBox != null && commBox.text().equals("Accepting Commissions")) {
+			cbres.kind = ReasonKind.POSITIVE;
+			cbres.desc = "'Accepting Commissions' is listed next to the profile.";
+		} else {
+			cbres.kind = ReasonKind.UNKNOWN;
+			cbres.desc = "'Accepting Commissions' is not listed next to the profile.";
+		}
+		reasons.add(cbres);
 	}
 	
-	public void findEvidence(Element input, ReasonType type) {
+	public ResultReason findEvidence(Element input, ReasonType type) {
 		ResultReason res = new ResultReason();
 		res.type = type;
 		res.kind = ReasonKind.UNKNOWN;
@@ -132,6 +174,7 @@ public class User {
 		// then, scrape the HTML for links to TOS or prices
 		
 		reasons.add(res);
+		return res;
 	}
 	
 	public boolean positiveWord(String s) {
@@ -139,6 +182,6 @@ public class User {
 	}
 	
 	public boolean negativeWord(String s) {
-		return s.contains("close") || s.contains("not") || s.contains("nope") || (s.contains("no") && !s.contains("note"));
+		return s.contains("close") || s.contains("not") || s.contains("nope") || (s.contains(" no") && !s.contains("note")) || s.contains("no ");
 	}
 }
