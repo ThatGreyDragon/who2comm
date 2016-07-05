@@ -101,11 +101,21 @@ public class User {
 		Element isPageBad = userpage.select("table.maintable tbody tr td.alt1").first();
 		if (!isPageBad.text().equals(" ")) { //that's a NBSP in that string, so be careful!
 			ResultReason res = new ResultReason();
-			res.type = ReasonType.OTHER;
-			res.kind = ReasonKind.UNKNOWN;
-			res.desc = "This user requires you to register to see this account.";
+			res.type = ReasonType.ERROR;
+			res.kind = ReasonKind.INVALID;
 			res.source = isPageBad.html();
 			res.link = getUserPageUrl();
+			
+			if (userpage.text().contains("voluntarily disabled")) {
+				res.desc = "This user has disabled thier account.";
+			} else if (userpage.text().contains("user cannot be found")) {
+				res.desc = "This user does not exist.";
+			} else if (userpage.text().contains("registered users only")) {
+				res.desc = "This user requires you to register to see this account.";
+			} else {
+				res.desc = "An unknown error occured.";
+			}
+			
 			reasons.add(res);
 			
 			status = Status.INVALID;
@@ -115,9 +125,12 @@ public class User {
 		
 		//look at the featured journal
 		Element featJournal = userpage.select("div.journal-body").first();
-		tempRes = findEvidence(featJournal, ReasonType.JOURNAL);
-		reasons.add(tempRes);
-		ReasonKind jres1 = tempRes.kind;
+		ReasonKind jres1 = ReasonKind.UNKNOWN;
+		if (featJournal != null) {
+			tempRes = findEvidence(featJournal, ReasonType.JOURNAL);
+			reasons.add(tempRes);
+			jres1 = tempRes.kind;
+		}
 		
 		//look at the journal header; common across all journals
 		Element header = userpage.select("div.journal-header").first();
@@ -163,22 +176,27 @@ public class User {
 		reasons.add(cbres);
 		
 		//All scraping done. Now, let's determine a result
-		status = Status.INVALID;
+		status = Status.UNKNOWN;
 		int pos = 0, neg = 0;
 		for (ResultReason res : reasons) {
 			if (res.kind == ReasonKind.POSITIVE) {
 				pos++;
 			} else if (res.kind == ReasonKind.NEGATIVE) {
 				neg++;
+			} else if (res.kind == ReasonKind.INVALID) {
+				status = Status.INVALID;
+				break;
 			}
 		}
 		
-		if (pos == 0 && neg == 0) {
-			status = Status.UNKNOWN;
-		} else if (pos >= neg) {
-			status = Status.OPEN;
-		} else {
-			status = Status.CLOSED;
+		if (status != Status.INVALID) {
+			if (pos == 0 && neg == 0) {
+				status = Status.UNKNOWN;
+			} else if (pos >= neg) {
+				status = Status.OPEN;
+			} else {
+				status = Status.CLOSED;
+			}
 		}
 	}
 	

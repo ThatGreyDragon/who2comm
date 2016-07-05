@@ -23,6 +23,7 @@ public class ResultReason {
 		JOURNAL_FOOTER,
 		TOS,
 		PRICES,
+		ERROR,
 		OTHER,
 	}
 	
@@ -36,6 +37,7 @@ public class ResultReason {
 		POSITIVE,
 		NEGATIVE,
 		UNKNOWN,
+		INVALID,
 	}
 	
 	/**
