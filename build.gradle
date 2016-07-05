@@ -1,6 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'edu.sc.seis.launch4j'
 
+def mainClass = 'info.iconmaster.who2comm.Who2Comm'
+
 repositories {
 	jcenter()
 	mavenCentral()
@@ -9,6 +11,7 @@ repositories {
 dependencies {
 	compile 'org.slf4j:slf4j-api:1.7.21'
 	compile 'org.jsoup:jsoup:1.9.2'
+	runtime 'org.jsoup:jsoup:1.9.2'
 	testCompile 'junit:junit:4.12'
 }
 
@@ -24,5 +27,14 @@ buildscript {
 }
 
 launch4j {
-	mainClassName = 'info.iconmaster.who2comm.Who2Comm'
+	mainClassName = mainClass
+	headerType = "console"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClass
+    }
+    
+    from configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
 }
