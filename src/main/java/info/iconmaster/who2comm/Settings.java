@@ -7,5 +7,16 @@ package info.iconmaster.who2comm;
  *
  */
 public class Settings {
+	/**
+	 * Whether or not to use AUTH_COOKIE to log in as a user.
+	 */
+	public static boolean USE_AUTH = false;
 	
+	/**
+	 * A cookie, provided to FA to scrape pages as if you were logged in.
+	 * 
+	 * Execute get-cookie.js (in this repository) in your browser console, on
+	 * an FA page while logged in, to get your FA cookie.
+	 */
+	public static String AUTH_COOKIE;
 }

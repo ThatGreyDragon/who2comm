@@ -2,6 +2,7 @@ package info.iconmaster.who2comm;
 
 import java.util.Scanner;
 
+import info.iconmaster.who2comm.CLAHelper.CLA;
 import info.iconmaster.who2comm.user.User;
 
 /**
@@ -17,15 +18,35 @@ public class Who2Comm {
 	 * @param args The command-line arguments.
 	 */
 	public static void main(String[] args) {
+		CLA cla = CLAHelper.getArgs(args);
 		String in;
-		if (args.length == 0) {
+		if (cla.unmatched.length == 0) {
 			System.out.print("Enter a FA username to look up: ");
 			in = new Scanner(System.in).nextLine();
+		} else if (cla.unmatched.length == 1) {
+			in = cla.unmatched[0];
 		} else {
-			in = args[0];
+			usage();
+			return;
 		}
+		
+		if (cla.containsKey("auth")) {
+			Settings.USE_AUTH = true;
+			Settings.AUTH_COOKIE = cla.get("auth");
+		}
+		
 		User u = new User(in);
 		u.findIfCommsOpen();
 		System.out.println(u);
+	}
+	
+	/**
+	 * Prints usage information and exits.
+	 */
+	public static void usage() {
+		System.out.println("Usage: who2comm [user] [options...]");
+		System.out.println("Options available are:");
+		System.out.println("	--auth 'cookie' :	Provides an authorization cookie to allow this program to scrape as you.");
+		System.exit(0);
 	}
 }
