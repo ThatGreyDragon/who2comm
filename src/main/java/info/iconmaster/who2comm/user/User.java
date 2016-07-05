@@ -59,12 +59,6 @@ public class User {
 	 * Not set until findIfCommsOpen() is called.
 	 */
 	public ArrayList<ResultReason> pricesLinks = new ArrayList<>();
-	
-	/**
-	 * An internal variable to keep track of the user's front page.
-	 * Don't access this directly. Use getUserPage().
-	 */
-	protected Document userpage;
 
 	/**
 	 * Creates a new User.
@@ -87,19 +81,12 @@ public class User {
 	
 	/**
 	 * This returns the DOM element of the user's front page.
-	 * Used during findIfCommsOpen(). Automatically created and destroyed during then,
-	 * so don't generally use it outside of there.
+	 * Used during findIfCommsOpen().
 	 * 
 	 * @return The user's front page.
 	 */
 	public Document getUserPage() {
-		if (userpage != null) {
-			return userpage;
-		}
-		
-		userpage = ConnectionManager.get(getUserPageUrl());
-		
-		return userpage;
+		return ConnectionManager.get(getUserPageUrl());
 	}
 	
 	/**
@@ -107,7 +94,7 @@ public class User {
 	 * This function grabs Internet data through ConnectionManager.
 	 */
 	public void findIfCommsOpen() {
-		getUserPage();
+		Document userpage = getUserPage();
 		
 		//check to see if we're not able to see the page
 		Element isPageBad = userpage.select("table.maintable tbody tr td.alt1").first();
@@ -186,9 +173,6 @@ public class User {
 		} else {
 			status = Status.CLOSED;
 		}
-		
-		//clean up
-		userpage = null;
 	}
 	
 	/**
