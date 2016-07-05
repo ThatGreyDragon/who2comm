@@ -95,6 +95,7 @@ public class User {
 	 */
 	public void findIfCommsOpen() {
 		Document userpage = getUserPage();
+		ResultReason tempRes;
 		
 		//check to see if we're not able to see the page
 		Element isPageBad = userpage.select("table.maintable tbody tr td.alt1").first();
@@ -114,31 +115,37 @@ public class User {
 		
 		//look at the featured journal
 		Element featJournal = userpage.select("div.journal-body").first();
-		ReasonKind jres1 = findEvidence(featJournal, ReasonType.JOURNAL).kind;
+		tempRes = findEvidence(featJournal, ReasonType.JOURNAL);
+		reasons.add(tempRes);
+		ReasonKind jres1 = tempRes.kind;
 		
 		//look at the journal header; common across all journals
 		Element header = userpage.select("div.journal-header").first();
 		ReasonKind jres2 = ReasonKind.UNKNOWN;
 		if (header != null) {
-			jres2 = findEvidence(header, ReasonType.JOURNAL_HEADER).kind;
+			tempRes = findEvidence(header, ReasonType.JOURNAL_HEADER);
+			reasons.add(tempRes);
+			jres2 = tempRes.kind;
 		}
 		
 		//look at the journal footer; common across all journals
 		Element footer = userpage.select("div.journal-header").first();
 		ReasonKind jres3 = ReasonKind.UNKNOWN;
 		if (footer != null) {
-			jres3 = findEvidence(footer, ReasonType.JOURNAL_FOOTER).kind;
+			tempRes = findEvidence(footer, ReasonType.JOURNAL_FOOTER);
+			reasons.add(tempRes);
+			jres3 = tempRes.kind;
 		}
 		
 		if (jres1 == ReasonKind.UNKNOWN && jres2 == ReasonKind.UNKNOWN && jres3 == ReasonKind.UNKNOWN) {
 			//if nothing is in featured journal, load up journals page and sift through them
 			//we want to do this as a last resort, as it involves loading another page
-			
+			// TODO
 		}
 		
 		//look at the user profile
 		Element profile = userpage.select("td.alt1.addpad table tbody tr td.ldot").first();
-		findEvidence(profile, ReasonType.PROFILE);
+		reasons.add(findEvidence(profile, ReasonType.PROFILE));
 		
 		// look at the "Accepting Commissions" box at the side of the profile
 		// Not many artists use this, so don't count it much
@@ -177,11 +184,11 @@ public class User {
 	
 	/**
 	 * This function is used for a section of a page (journals, profile, etc.).
-	 * It finds indicitave words, and updates the reason list with a result.
+	 * It finds indicitave words, and returns the reason with a result.
 	 * 
 	 * @param input The node that may contain the text of interest.
 	 * @param type Where this node came from, e.g. profile, journal, etc.
-	 * @return The result of the investigation. Note that reasons is already updated for you.
+	 * @return The result of the investigation.
 	 */
 	public ResultReason findEvidence(Element input, ReasonType type) {
 		ResultReason res = new ResultReason();
@@ -250,8 +257,9 @@ public class User {
 		}
 		
 		// then, scrape the HTML for links to TOS or prices
+		// TODO
 		
-		reasons.add(res);
+		// return the result
 		return res;
 	}
 	
