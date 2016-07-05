@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import info.iconmaster.who2comm.ConnectionManager;
+import info.iconmaster.who2comm.Utils;
 import info.iconmaster.who2comm.user.ResultReason.ReasonKind;
 import info.iconmaster.who2comm.user.ResultReason.ReasonType;
 
@@ -70,16 +71,28 @@ public class User {
 		res.desc = "No indicitave information found.";
 		
 		// first, search for the words that indicate comms are open or not
-		String raw = input.text().toLowerCase();
-		boolean found = raw.contains("comm");
-		
-		if (found) {
-			res.kind = ReasonKind.POSITIVE;
-			res.desc = "The word 'comm' was found, and not 'closed.'";
-			found = raw.contains("closed");
+		String raw = input.html().toLowerCase();
+		String[] paragraphs = Utils.splitBreaks(raw);
+		for (String p : paragraphs) {
+			boolean found = p.contains("comm");
+			
 			if (found) {
-				res.desc = "The word 'comm' was found, as well as 'closed.'";
-				res.kind = ReasonKind.NEGATIVE;
+				res.kind = ReasonKind.POSITIVE;
+				res.desc = "The word 'comm' was found, and not 'closed.'";
+				res.source = p;
+				
+				found = p.contains("closed");
+				if (found) {
+					res.desc = "The word 'comm' was found, as well as 'closed.'";
+					res.kind = ReasonKind.NEGATIVE;
+					break;
+				}
+				
+				found = p.contains("open");
+				if (found) {
+					res.desc = "The word 'comm' was found, as well as 'open.'";
+					break;
+				}
 			}
 		}
 		
