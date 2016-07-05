@@ -10,7 +10,20 @@ import info.iconmaster.who2comm.Utils;
 import info.iconmaster.who2comm.user.ResultReason.ReasonKind;
 import info.iconmaster.who2comm.user.ResultReason.ReasonType;
 
+/**
+ * User represents an FA user. It contains data about open/closed for comms status,
+ * reasons for this determination, and other relevant user data.
+ * 
+ * @author iconmaster
+ *
+ */
 public class User {
+	/**
+	 * An enum representing open/closed for comms status.
+	 * 
+	 * @author iconmaster
+	 *
+	 */
 	public static enum Status {
 		OPEN,
 		CLOSED,
@@ -18,23 +31,67 @@ public class User {
 		UNKNOWN,
 	}
 	
+	/**
+	 * The FA username of the person to query.
+	 */
 	public String name;
 	
-	protected Document userpage;
-	
+	/**
+	 * Whether or not the user is open or closed for commissions.
+	 * Not set until findIfCommsOpen() is called.
+	 */
 	public Status status;
+	
+	/**
+	 * A list of reasons the user's status is the way it is.
+	 * Not set until findIfCommsOpen() is called.
+	 */
 	public ArrayList<ResultReason> reasons = new ArrayList<>();
+	
+	/**
+	 * A list of possible links to the user's terms of service.
+	 * Not set until findIfCommsOpen() is called.
+	 */
 	public ArrayList<ResultReason> tosLinks = new ArrayList<>();
+	
+	/**
+	 * A list of possible links to the user's price guide.
+	 * Not set until findIfCommsOpen() is called.
+	 */
 	public ArrayList<ResultReason> pricesLinks = new ArrayList<>();
+	
+	/**
+	 * An internal variable to keep track of the user's front page.
+	 * Don't access this directly. Use getUserPage().
+	 */
+	protected Document userpage;
 
+	/**
+	 * Creates a new User.
+	 * Once constructed, call findIfCommsOpen() to scrape FA and find status.
+	 * 
+	 * @param name the FA username
+	 */
 	public User(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Returns the URL of the user's FA homepage.
+	 * 
+	 * @return FA homepage URL
+	 */
 	public String getUserPageUrl() {
 		return "http://www.furaffinity.net/user/" + name + "/";
 	}
 	
+	/**
+	 * This returns the DOM element of the user's front page.
+	 * Used during findIfCommsOpen(). Automatically created and destroyed during then,
+	 * so don't generally use it outside of there.
+	 * 
+	 * @return The user's front page.
+	 */
 	public Document getUserPage() {
 		if (userpage != null) {
 			return userpage;
@@ -45,6 +102,10 @@ public class User {
 		return userpage;
 	}
 	
+	/**
+	 * Determines if this user is open or closed for commissions.
+	 * This function grabs Internet data through ConnectionManager.
+	 */
 	public void findIfCommsOpen() {
 		getUserPage();
 		
@@ -130,6 +191,14 @@ public class User {
 		userpage = null;
 	}
 	
+	/**
+	 * This function is used for a section of a page (journals, profile, etc.).
+	 * It finds indicitave words, and updates the reason list with a result.
+	 * 
+	 * @param input The node that may contain the text of interest.
+	 * @param type Where this node came from, e.g. profile, journal, etc.
+	 * @return The result of the investigation. Note that reasons is already updated for you.
+	 */
 	public ResultReason findEvidence(Element input, ReasonType type) {
 		ResultReason res = new ResultReason();
 		res.type = type;
@@ -202,14 +271,29 @@ public class User {
 		return res;
 	}
 	
+	/**
+	 * Given a paragraph of text, see if there's a positive word that can go with the word 'comm'.
+	 * 
+	 * @param s The paragraph to check.
+	 * @return Whether or not it contains a positive word, e.g. "open" or "yes".
+	 */
 	public boolean positiveWord(String s) {
 		return s.contains("open") || s.contains("yes") || s.contains("yep");
 	}
 	
+	/**
+	 * Given a paragraph of text, see if there's a negative word that can go with the word 'comm'.
+	 * 
+	 * @param s The paragraph to check.
+	 * @return Whether or not it contains a negative word, e.g. "closed" or "no".
+	 */
 	public boolean negativeWord(String s) {
 		return s.contains("close") || s.contains("not") || s.contains("nope") || (s.contains(" no") && !s.contains("note")) || s.contains("no ");
 	}
 	
+	/**
+	 * The toString method. Produces pretty output good for a console.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("User ");
