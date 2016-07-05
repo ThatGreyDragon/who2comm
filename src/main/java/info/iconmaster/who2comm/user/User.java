@@ -68,36 +68,77 @@ public class User {
 		res.type = type;
 		res.kind = ReasonKind.UNKNOWN;
 		res.source = input.html();
+		res.link = getUserPageUrl();
 		res.desc = "No indicitave information found.";
 		
 		// first, search for the words that indicate comms are open or not
+		boolean fallback = true;
 		String raw = input.html().toLowerCase();
 		String[] paragraphs = Utils.splitBreaks(raw);
-		for (String p : paragraphs) {
+		
+		for (String p : paragraphs) { // look for words on same line
 			boolean found = p.contains("comm");
 			
 			if (found) {
-				res.kind = ReasonKind.POSITIVE;
-				res.desc = "The word 'comm' was found, and not 'closed.'";
 				res.source = p;
 				
-				found = p.contains("closed");
-				if (found) {
+				if (negativeWord(p)) {
 					res.desc = "The word 'comm' was found, as well as 'closed.'";
 					res.kind = ReasonKind.NEGATIVE;
+					fallback = false;
 					break;
 				}
 				
-				found = p.contains("open");
-				if (found) {
+				if (positiveWord(p)) {
 					res.desc = "The word 'comm' was found, as well as 'open.'";
+					res.kind = ReasonKind.POSITIVE;
+					fallback = false;
 					break;
 				}
 			}
 		}
 		
+		if (fallback) { // look for words on two consucutive line
+			for (int i = 0; i < paragraphs.length - 1; i++) {
+				res.source = paragraphs[i] + "<br>" + paragraphs[i+1];
+				
+				boolean found = paragraphs[i].contains("comm");
+				if (found) {
+					if (negativeWord(paragraphs[i+1])) {
+						res.desc = "The word 'comm' was found, as well as 'closed.'";
+						res.kind = ReasonKind.NEGATIVE;
+						fallback = false;
+						break;
+					}
+					
+					if (positiveWord(paragraphs[i+1])) {
+						res.desc = "The word 'comm' was found, as well as 'open.'";
+						res.kind = ReasonKind.POSITIVE;
+						fallback = false;
+						break;
+					}
+				}
+			}
+		}
+		
+		if (fallback && raw.contains("comm")) { //comm was there, but no other useful words
+			res.desc = "The word 'comm' was found, and not 'closed.'";
+			res.kind = ReasonKind.POSITIVE;
+		} else if (fallback && raw.contains("closed")) { //closed was there, but no other useful words
+			res.desc = "The word 'closed.' was found, but not 'comm'.";
+			res.kind = ReasonKind.NEGATIVE;
+		}
+		
 		// then, scrape the HTML for links to TOS or prices
 		
 		reasons.add(res);
+	}
+	
+	public boolean positiveWord(String s) {
+		return s.contains("open") || s.contains("yes") || s.contains("yep");
+	}
+	
+	public boolean negativeWord(String s) {
+		return s.contains("close") || s.contains("not") || s.contains("nope") || (s.contains("no") && !s.contains("note"));
 	}
 }
