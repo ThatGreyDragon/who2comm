@@ -6,6 +6,6 @@ public class Who2Comm {
 	public static void main(String[] args) {
 		User u = new User("rukis");
 		u.findIfCommsOpen();
-		System.out.println(u.reasons);
+		System.out.println(u);
 	}
 }

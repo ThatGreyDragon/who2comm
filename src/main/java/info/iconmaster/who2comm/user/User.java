@@ -103,6 +103,25 @@ public class User {
 			cbres.desc = "'Accepting Commissions' is not listed next to the profile.";
 		}
 		reasons.add(cbres);
+		
+		//All scraping done. Now, let's determine a result
+		status = Status.UNKNOWN;
+		int pos = 0, neg = 0;
+		for (ResultReason res : reasons) {
+			if (res.kind == ReasonKind.POSITIVE) {
+				pos++;
+			} else if (res.kind == ReasonKind.NEGATIVE) {
+				neg++;
+			}
+		}
+		if (pos >= neg) {
+			status = Status.OPEN;
+		} else {
+			status = Status.CLOSED;
+		}
+		
+		//clean up
+		userpage = null;
 	}
 	
 	public ResultReason findEvidence(Element input, ReasonType type) {
@@ -183,5 +202,20 @@ public class User {
 	
 	public boolean negativeWord(String s) {
 		return s.contains("close") || s.contains("not") || s.contains("nope") || (s.contains(" no") && !s.contains("note")) || s.contains("no ");
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("User ");
+		sb.append(name);
+		sb.append(" is...\n");
+		sb.append(status);
+		sb.append("\nReasons:");
+		for (ResultReason res : reasons) {
+			sb.append("\n\t");
+			sb.append(res.toString().replace("\n", "\n\t"));
+		}
+		sb.append('\n');
+		return sb.toString();
 	}
 }

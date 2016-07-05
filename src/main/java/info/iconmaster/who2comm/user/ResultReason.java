@@ -26,7 +26,11 @@ public class ResultReason {
 	
 	@Override
 	public String toString() {
-		return "ResultReason [type=" + type + ", kind=" + kind + ", desc=" + desc + ", source=" + source + ", link="
-				+ link + "]";
+		StringBuilder sb = new StringBuilder(type.toString());
+		sb.append(" : ");
+		sb.append(kind);
+		sb.append("\n\t");
+		sb.append(desc);
+		return sb.toString();
 	}
 }
