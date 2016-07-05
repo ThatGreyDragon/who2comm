@@ -14,7 +14,7 @@ public class User {
 	public static enum Status {
 		OPEN,
 		CLOSED,
-		INACTIVE,
+		INVALID,
 		UNKNOWN,
 	}
 	
@@ -58,6 +58,9 @@ public class User {
 			res.source = isPageBad.html();
 			res.link = getUserPageUrl();
 			reasons.add(res);
+			
+			status = Status.INVALID;
+			userpage = null;
 			return;
 		}
 		
@@ -105,7 +108,7 @@ public class User {
 		reasons.add(cbres);
 		
 		//All scraping done. Now, let's determine a result
-		status = Status.UNKNOWN;
+		status = Status.INVALID;
 		int pos = 0, neg = 0;
 		for (ResultReason res : reasons) {
 			if (res.kind == ReasonKind.POSITIVE) {
@@ -114,7 +117,10 @@ public class User {
 				neg++;
 			}
 		}
-		if (pos >= neg) {
+		
+		if (pos == 0 && neg == 0) {
+			status = Status.UNKNOWN;
+		} else if (pos >= neg) {
 			status = Status.OPEN;
 		} else {
 			status = Status.CLOSED;
