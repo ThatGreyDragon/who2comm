@@ -99,7 +99,7 @@ public class User {
 		
 		//check to see if we're not able to see the page
 		Element isPageBad = userpage.select("table.maintable tbody tr td.alt1").first();
-		if (!isPageBad.text().equals(" ")) {
+		if (!isPageBad.text().equals(" ")) { //that's a NBSP in that string, so be careful!
 			ResultReason res = new ResultReason();
 			res.type = ReasonType.OTHER;
 			res.kind = ReasonKind.UNKNOWN;
