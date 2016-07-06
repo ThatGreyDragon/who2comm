@@ -30,14 +30,14 @@ public class ConnectionManager {
 				//find cookie A
 				Matcher m = Pattern.compile("a=([a-fA-F0-9\\-]+)").matcher(Settings.AUTH_COOKIE);
 				if (m.find()) {
-					String a = m.group(1); System.out.println(a);
+					String a = m.group(1);
 					conn = conn.cookie("a", a);
 				}
 				
 				//find cookie B
 				m = Pattern.compile("b=([a-fA-F0-9\\-]+)").matcher(Settings.AUTH_COOKIE);
 				if (m.find()) {
-					String b = m.group(1); System.out.println(b);
+					String b = m.group(1);
 					conn = conn.cookie("b", b);
 				}
 			}
