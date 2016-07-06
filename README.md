@@ -61,3 +61,7 @@ I'd really like to know when an execution results in a false positive or a false
  * More sophisticated determination algorithms.
  * Ability to load a watchlist and check all artists at once.
  * Automatically finding links to TOSes and price guides.
+ 
+# DISCLAIMER
+
+THIS APPLICATION DOES NOT PROVIDE A WARRANTY FOR ANY FUNCTIONALITY. THE USER OF THIS APPLICATION IS LIABLE FOR ANY VIOLATIONS OF THE FURAFFINITY [TERMS OF SERVICE](http://www.furaffinity.net/tos) OR [CODE OF CONDUCT](http://www.furaffinity.net/coc) DONE WHILE USING THIS APPLICATION.
