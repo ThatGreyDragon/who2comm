@@ -31,7 +31,8 @@ If you use `who2comm.jar`, run:
 If supplied without any arguments, who2comm will prompt you for a FA username to look up. With one argument supplied, who2comm will look up that user instead.
 
 The flags currently supported are:
- * __-auth__: Provide a cookie set for FA authorization (see below)
+ * __-auth__:    Provide a cookie set for FA authorization (see below).
+ * __-wlist__:   When given a username, who2comm will print that user's watchlist and exit.
  
 ## Usage
 
