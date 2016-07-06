@@ -28,15 +28,16 @@ If you use `who2comm.jar`, run:
 
 ## Options
 
-If supplied without any arguments, who2comm will prompt you for a FA username to look up. With one argument supplied, who2comm will look up that user instead.
+If supplied without any arguments, who2comm will prompt you for FA usernames to look up, separated by spaces. With arguments supplied, who2comm will look up those users instead.
 
 The flags currently supported are:
  * __-auth__:    Provide a cookie set for FA authorization (see below).
  * __-wlist__:   When given a username, who2comm will print that user's watchlist and exit.
+ * __-delay__:   Specifies the minimum delay between page scrapes, in milliseconds. If you're looking at lots of users at once, make this value high.
  
 ## Usage
 
-Once it has the name of a FA user, it will scrape their FA userpage and try to see if they are open for commissions or not.
+Once it has a name of a FA user, it will scrape their FA userpage and try to see if they are open for commissions or not.
 
 It will produce a list of reasons why it thinks this user is open or not. It checks places such as journals and profile blurbs.
 

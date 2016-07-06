@@ -1,5 +1,7 @@
 package info.iconmaster.who2comm;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import info.iconmaster.who2comm.CLAHelper.CLA;
@@ -19,13 +21,25 @@ public class Who2Comm {
 	 */
 	public static void main(String[] args) {
 		CLA cla = CLAHelper.getArgs(args);
-		String in;
 		
 		// parse settings here. See usage() for what these flags do.
 		
 		if (cla.containsKey("auth")) {
 			Settings.USE_AUTH = true;
 			Settings.AUTH_COOKIE = cla.get("auth");
+			cla.remove("auth");
+		}
+		
+		if (cla.containsKey("delay")) {
+			String delay = cla.get("delay");
+			try {
+				Settings.MIN_DELAY = Long.parseUnsignedLong(delay);
+			} catch (NumberFormatException e) {
+				System.out.println("Error: Invalid delay amount \'" + delay + "\'.");
+				usage();
+				return;
+			}
+			cla.remove("delay");
 		}
 		
 		if (cla.containsKey("wlist")) {
@@ -48,24 +62,32 @@ public class Who2Comm {
 					i = (i + 1) % 8;
 				}
 			}
-			System.exit(0);
+			return;
 		}
 		
-		//see if we're in command-line mode or not
-		if (cla.unmatched.length == 0) {
-			//TODO: make this open the GUI instead
-			System.out.print("Enter a FA username to look up: ");
-			in = new Scanner(System.in).nextLine();
-		} else if (cla.unmatched.length == 1) {
-			in = cla.unmatched[0];
-		} else {
+		if (!cla.isEmpty()) {
+			System.out.println("Error: Invalid option -" + cla.entrySet().toArray()[0] + ".");
 			usage();
 			return;
 		}
 		
-		User u = new User(in);
-		u.findIfCommsOpen();
-		System.out.println(u);
+		//see if we're in command-line mode or not
+		String[] in;
+		if (cla.unmatched.length == 0) {
+			//TODO: make this open the GUI instead
+			System.out.print("Enter FA username(s) to look up: ");
+			in = new Scanner(System.in).nextLine().split("\\s+");
+			// sheesh, Java's functional stream support is really hard to read
+			in = Arrays.asList(Arrays.stream(in).filter((String s)->s.matches("^\\S*$")).toArray()).toArray(new String[0]);
+		} else {
+			in = cla.unmatched;
+		}
+		
+		for (String username: in) {
+			User u = new User(username);
+			u.findIfCommsOpen();
+			System.out.println(u);
+		}
 	}
 	
 	/**
@@ -74,8 +96,9 @@ public class Who2Comm {
 	public static void usage() {
 		System.out.println("Usage: who2comm [user] [options...]");
 		System.out.println("Options available are:");
-		System.out.println("	-auth 'cookie' :       Provides an authorization cookie to allow this program to scrape as you.");
-		System.out.println("	-wlist 'name' :        Prints the watchlist of the given user and exits.");
+		System.out.println("	-auth 'cookie' :    Provides an authorization cookie to allow this program to scrape as you.");
+		System.out.println("	-wlist 'name'  :    Prints the watchlist of the given user and exits.");
+		System.out.println("	-delay 'ms'    :    Specifies the minimum delay between FA page accesses.");
 		System.exit(0);
 	}
 }

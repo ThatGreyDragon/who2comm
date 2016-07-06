@@ -19,4 +19,10 @@ public class Settings {
 	 * an FA page while logged in, to get your FA cookie.
 	 */
 	public static String AUTH_COOKIE;
+	
+	/**
+	 * Who2comm ensures that this number of milliseconds goes by at minimum
+	 * between all FA page downloads.
+	 */
+	public static long MIN_DELAY = 1L;
 }
