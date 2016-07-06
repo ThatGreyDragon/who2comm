@@ -67,7 +67,7 @@ public class User {
 	 * @param name the FA username
 	 */
 	public User(String name) {
-		this.name = name;
+		this.name = Utils.formatUsername(name);
 	}
 	
 	/**

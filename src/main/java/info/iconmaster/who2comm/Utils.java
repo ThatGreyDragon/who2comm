@@ -46,7 +46,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String[] getWatchlist(String user) {
-		Document doc = ConnectionManager.get("http://www.furaffinity.net/watchlist/by/" + user + "/");
+		Document doc = ConnectionManager.get("http://www.furaffinity.net/watchlist/by/" + Utils.formatUsername(user) + "/");
 		if (doc.text().contains("username not found in the database")) {
 			// return nothing if the user doesn't exist
 			return null;
@@ -70,5 +70,15 @@ public class Utils {
 		}
 		
 		return a.toArray(new String[0]);
+	}
+	
+	/**
+	 * Turns a raw FA name into one usable for URL lookup.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static String formatUsername(String name) {
+		return name.replace("_", "");
 	}
 }
