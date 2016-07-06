@@ -57,7 +57,7 @@ public class Utils {
 		for (Element watcher : users) {
 			// split the entry into prefix and username
 			String prefixedName = watcher.text();
-			Matcher m = Pattern.compile("([\\~\\!])\\w*(.*)").matcher(prefixedName);
+			Matcher m = Pattern.compile("([\\~\\!])\\s*(.*)").matcher(prefixedName);
 			if (m.find()) {
 				String prefix = m.group(1);
 				

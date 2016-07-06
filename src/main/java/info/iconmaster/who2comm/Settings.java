@@ -24,5 +24,5 @@ public class Settings {
 	 * Who2comm ensures that this number of milliseconds goes by at minimum
 	 * between all FA page downloads.
 	 */
-	public static long MIN_DELAY = 1L;
+	public static long MIN_DELAY = 100L;
 }

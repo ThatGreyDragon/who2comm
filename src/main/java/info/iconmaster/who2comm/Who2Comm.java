@@ -1,6 +1,5 @@
 package info.iconmaster.who2comm;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -65,6 +64,29 @@ public class Who2Comm {
 			return;
 		}
 		
+		if (cla.containsKey("search")) {
+			String name = cla.get("search");
+			String[] names = Utils.getWatchlist(name);
+			if (names == null) {
+				System.out.println("Error: User " + name + " does not exist.");
+				return;
+			}
+			int[] results = new int[User.Status.values().length];
+			System.out.println("Looking up " + names.length + "users...");
+			for (String username : names) {
+				User u = new User(username);
+				u.findIfCommsOpen();
+				results[u.status.ordinal()]++;
+				System.out.println(u);
+			}
+			System.out.println();
+			System.out.println("TOTALS:");
+			for (User.Status st : User.Status.values()) {
+				System.out.println("\t" + st + ": " + results[st.ordinal()]);
+			}
+			return;
+		}
+		
 		if (!cla.isEmpty()) {
 			System.out.println("Error: Invalid option -" + cla.entrySet().toArray()[0] + ".");
 			usage();
@@ -99,6 +121,7 @@ public class Who2Comm {
 		System.out.println("	-auth 'cookie' :    Provides an authorization cookie to allow this program to scrape as you.");
 		System.out.println("	-wlist 'name'  :    Prints the watchlist of the given user and exits.");
 		System.out.println("	-delay 'ms'    :    Specifies the minimum delay between FA page accesses.");
+		System.out.println("	-search 'name' :    Does lookup on all users on this person's wachlist.");
 		System.exit(0);
 	}
 }
