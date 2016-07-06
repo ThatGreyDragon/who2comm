@@ -51,6 +51,16 @@ To authourize who2comm, you first need to grab your cookie information. To do th
 
 You should get a string as output. Copy this string, and provide it to the `-auth` flag of who2comm (see above).
 
+## Compiling
+
+If you want to manually produce who2comm from source, just check out the repository and run
+
+    ./gradlew jar launch4j
+
+If you're running Windows and don't have Cygwin, etc., run `gradlew.bat` instead of `./gradlew`.
+
+This will produce both files, in `build/libs` and `build/launch4j`, respectively.
+
 ## Bug Reports
 
 I'd really like to know when an execution results in a false positive or a false negative. Please use the [GitHub issue tracker](https://github.com/iconmaster5326/who2comm/issues) to submit and bug reports and false results.
