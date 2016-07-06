@@ -26,7 +26,10 @@ public class ConnectionManager {
 	public static Document get(String url) {
 		try {
 			Connection conn = Jsoup.connect(url);
+			
 			if (Settings.USE_AUTH && Settings.AUTH_COOKIE != null) {
+				// to log in, we need two cookies from the user, called "a" and "b" by FA.
+				
 				//find cookie A
 				Matcher m = Pattern.compile("a=([a-fA-F0-9\\-]+)").matcher(Settings.AUTH_COOKIE);
 				if (m.find()) {

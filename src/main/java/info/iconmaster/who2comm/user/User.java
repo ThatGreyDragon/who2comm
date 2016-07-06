@@ -298,7 +298,7 @@ public class User {
 	 * @return Whether or not it contains a negative word, e.g. "closed" or "no".
 	 */
 	public boolean negativeWord(String s) {
-		return s.contains("close") || s.contains("not") || s.contains("nope") || (s.contains(" no") && !s.contains("note")) || s.contains("no ");
+		return s.contains("close") || (s.contains("not") && !s.contains("note")) || s.contains("nope") || (s.contains(" no") && !s.contains("note")) || s.contains("no ");
 	}
 	
 	/**
