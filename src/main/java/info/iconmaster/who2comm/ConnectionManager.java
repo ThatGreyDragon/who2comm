@@ -1,7 +1,10 @@
 package info.iconmaster.who2comm;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -22,7 +25,23 @@ public class ConnectionManager {
 	 */
 	public static Document get(String url) {
 		try {
-			return Jsoup.connect(url).get();
+			Connection conn = Jsoup.connect(url);
+			if (Settings.USE_AUTH && Settings.AUTH_COOKIE != null) {
+				//find cookie A
+				Matcher m = Pattern.compile("a=([a-fA-F0-9\\-]+)").matcher(Settings.AUTH_COOKIE);
+				if (m.find()) {
+					String a = m.group(1); System.out.println(a);
+					conn = conn.cookie("a", a);
+				}
+				
+				//find cookie B
+				m = Pattern.compile("b=([a-fA-F0-9\\-]+)").matcher(Settings.AUTH_COOKIE);
+				if (m.find()) {
+					String b = m.group(1); System.out.println(b);
+					conn = conn.cookie("b", b);
+				}
+			}
+			return conn.get();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

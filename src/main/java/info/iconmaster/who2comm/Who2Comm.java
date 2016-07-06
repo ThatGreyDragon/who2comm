@@ -20,7 +20,16 @@ public class Who2Comm {
 	public static void main(String[] args) {
 		CLA cla = CLAHelper.getArgs(args);
 		String in;
+		
+		//parse settings
+		if (cla.containsKey("auth")) {
+			Settings.USE_AUTH = true;
+			Settings.AUTH_COOKIE = cla.get("auth");
+		}
+		
+		//see if we're in command-line mode or not
 		if (cla.unmatched.length == 0) {
+			//TODO: make this open the GUI instead
 			System.out.print("Enter a FA username to look up: ");
 			in = new Scanner(System.in).nextLine();
 		} else if (cla.unmatched.length == 1) {
@@ -28,11 +37,6 @@ public class Who2Comm {
 		} else {
 			usage();
 			return;
-		}
-		
-		if (cla.containsKey("auth")) {
-			Settings.USE_AUTH = true;
-			Settings.AUTH_COOKIE = cla.get("auth");
 		}
 		
 		User u = new User(in);
