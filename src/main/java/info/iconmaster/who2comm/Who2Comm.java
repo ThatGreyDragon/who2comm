@@ -72,7 +72,7 @@ public class Who2Comm {
 				return;
 			}
 			int[] results = new int[User.Status.values().length];
-			System.out.println("Looking up " + names.length + "users...");
+			System.out.println("Looking up " + names.length + " users...");
 			for (String username : names) {
 				User u = new User(username);
 				u.findIfCommsOpen();
