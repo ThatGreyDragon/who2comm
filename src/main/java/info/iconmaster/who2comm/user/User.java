@@ -229,7 +229,7 @@ public class User {
 		String[] paragraphs = Utils.splitBreaks(raw);
 		
 		for (String p : paragraphs) { // look for words on same line
-			boolean found = p.contains("comm");
+			boolean found = commWord(p);
 			
 			if (found) {
 				res.source = p;
@@ -254,7 +254,7 @@ public class User {
 			for (int i = 0; i < paragraphs.length - 1; i++) {
 				res.source = paragraphs[i] + "<br>" + paragraphs[i+1];
 				
-				boolean found = paragraphs[i].contains("comm");
+				boolean found = commWord(paragraphs[i]);
 				if (found) {
 					if (negativeWord(paragraphs[i+1])) {
 						res.desc = "The word 'comm' was found, as well as 'closed.'";
@@ -273,7 +273,7 @@ public class User {
 			}
 		}
 		
-		if (fallback && raw.contains("comm")) { //comm was there, but no other useful words
+		if (fallback && commWord(raw)) { //comm was there, but no other useful words
 			res.desc = "The word 'comm' was found, and not 'closed.'";
 			res.kind = ReasonKind.POSITIVE;
 		} else if (fallback && raw.contains("closed")) { //closed was there, but no other useful words
@@ -286,6 +286,16 @@ public class User {
 		
 		// return the result
 		return res;
+	}
+	
+	/**
+	 * Given a paragraph of text, see if there's a word that indicates the user is thinking about commissions.
+	 * 
+	 * @param s The paragraph to check.
+	 * @return Whether or not it contains a commission word, like 'comm'.
+	 */
+	public boolean commWord(String s) {
+		return s.contains("comm") && !s.contains("comment");
 	}
 	
 	/**
