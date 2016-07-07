@@ -130,6 +130,13 @@ public class User {
 			tempRes = findEvidence(featJournal, ReasonType.JOURNAL);
 			reasons.add(tempRes);
 			jres1 = tempRes.kind;
+			
+			//also try to find the journal title
+			featJournal = userpage.select("div.no_overflow font[size=2] b a").first();
+			if (featJournal != null) {
+				tempRes = findEvidence(featJournal, ReasonType.JOURNAL_TITLE);
+				reasons.add(tempRes);
+			}
 		}
 		
 		//look at the journal header; common across all journals

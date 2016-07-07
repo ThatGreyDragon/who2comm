@@ -19,6 +19,7 @@ public class ResultReason {
 		PROFILE,
 		OPEN_STATUS_BOX,
 		JOURNAL,
+		JOURNAL_TITLE,
 		JOURNAL_HEADER,
 		JOURNAL_FOOTER,
 		TOS,
