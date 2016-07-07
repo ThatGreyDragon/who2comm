@@ -35,6 +35,7 @@ The flags currently supported are:
  * __-wlist__:   When given a username, who2comm will print that user's watchlist and exit.
  * __-delay__:   Specifies the minimum delay between page scrapes, in milliseconds. If you're looking at lots of users at once, make this value high.
  * __-search__:  Takes a user, grabs their watchlist, and runs who2comm on the whole thing. Make sure your delay is reasonable.
+ * __-q__:       Quiet mode. Limits output to console.
  
 ## Usage
 

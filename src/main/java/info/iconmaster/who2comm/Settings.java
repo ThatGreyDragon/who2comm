@@ -25,4 +25,9 @@ public class Settings {
 	 * between all FA page downloads.
 	 */
 	public static long MIN_DELAY = 100L;
+	
+	/**
+	 * Limits output to essential bits when true.
+	 */
+	public static boolean QUIET = false;
 }

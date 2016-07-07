@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import info.iconmaster.who2comm.ConnectionManager;
+import info.iconmaster.who2comm.Settings;
 import info.iconmaster.who2comm.Utils;
 import info.iconmaster.who2comm.user.ResultReason.ReasonKind;
 import info.iconmaster.who2comm.user.ResultReason.ReasonType;
@@ -323,16 +324,20 @@ public class User {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("User ");
-		sb.append(name);
-		sb.append(" is...\n");
-		sb.append(status);
-		sb.append("\nReasons:");
-		for (ResultReason res : reasons) {
-			sb.append("\n\t");
-			sb.append(res.toString().replace("\n", "\n\t"));
+		if (Settings.QUIET) {
+			return name + " : " + status;
+		} else {
+			StringBuilder sb = new StringBuilder("User ");
+			sb.append(name);
+			sb.append(" is...\n");
+			sb.append(status);
+			sb.append("\nReasons:");
+			for (ResultReason res : reasons) {
+				sb.append("\n\t");
+				sb.append(res.toString().replace("\n", "\n\t"));
+			}
+			sb.append('\n');
+			return sb.toString();
 		}
-		sb.append('\n');
-		return sb.toString();
 	}
 }

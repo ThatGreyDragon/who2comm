@@ -41,6 +41,11 @@ public class Who2Comm {
 			cla.remove("delay");
 		}
 		
+		if (cla.containsKey("q")) {
+			Settings.QUIET = true;
+			cla.remove("q");
+		}
+		
 		if (cla.containsKey("wlist")) {
 			String name = cla.get("wlist");
 			String[] names = Utils.getWatchlist(name);
@@ -72,14 +77,14 @@ public class Who2Comm {
 				return;
 			}
 			int[] results = new int[User.Status.values().length];
-			System.out.println("Looking up " + names.length + " users...");
+			if (!Settings.QUIET) System.out.println("Looking up " + names.length + " users...");
 			for (String username : names) {
 				User u = new User(username);
 				u.findIfCommsOpen();
 				results[u.status.ordinal()]++;
-				System.out.println(u);
+				if (!Settings.QUIET) System.out.println(u);
 			}
-			System.out.println();
+			if (!Settings.QUIET) System.out.println();
 			System.out.println("TOTALS:");
 			for (User.Status st : User.Status.values()) {
 				System.out.println("\t" + st + ": " + results[st.ordinal()]);
@@ -88,7 +93,7 @@ public class Who2Comm {
 		}
 		
 		if (!cla.isEmpty()) {
-			System.out.println("Error: Invalid option -" + cla.entrySet().toArray()[0] + ".");
+			System.out.println("Error: Invalid option -" + cla.keySet().toArray()[0] + ".");
 			usage();
 			return;
 		}
@@ -122,6 +127,7 @@ public class Who2Comm {
 		System.out.println("	-wlist 'name'  :    Prints the watchlist of the given user and exits.");
 		System.out.println("	-delay 'ms'    :    Specifies the minimum delay between FA page accesses.");
 		System.out.println("	-search 'name' :    Does lookup on all users on this person's wachlist.");
+		System.out.println("	-q             :    Quiet mode.");
 		System.exit(0);
 	}
 }
