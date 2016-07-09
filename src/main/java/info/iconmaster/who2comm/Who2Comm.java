@@ -1,9 +1,7 @@
 package info.iconmaster.who2comm;
 
-import java.util.Arrays;
-import java.util.Scanner;
-
 import info.iconmaster.who2comm.CLAHelper.CLA;
+import info.iconmaster.who2comm.gui.Who2CommGUI;
 import info.iconmaster.who2comm.user.User;
 
 /**
@@ -101,11 +99,8 @@ public class Who2Comm {
 		//see if we're in command-line mode or not
 		String[] in;
 		if (cla.unmatched.length == 0) {
-			//TODO: make this open the GUI instead
-			System.out.print("Enter FA username(s) to look up: ");
-			in = new Scanner(System.in).nextLine().split("\\s+");
-			// sheesh, Java's functional stream support is really hard to read
-			in = Arrays.asList(Arrays.stream(in).filter((String s)->s.matches("^\\S*$")).toArray()).toArray(new String[0]);
+			Who2CommGUI.launchGUI();
+			return;
 		} else {
 			in = cla.unmatched;
 		}
